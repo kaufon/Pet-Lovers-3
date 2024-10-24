@@ -9,23 +9,16 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { Component } from "react";
+import React, { useState } from "react";
 
-export class ListsPage extends Component<any, any> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedList: "",
-    };
-  }
+export const ListsPage = () => {
+  const [selectedList, setSelectedList] = useState<string>("");
 
-  handleSelectChange = (value: string) => {
-    this.setState({ selectedList: value });
+  const handleSelectChange = (value: string) => {
+    setSelectedList(value);
   };
 
-  renderTable() {
-    const { selectedList } = this.state;
-
+  const renderTable = () => {
     switch (selectedList) {
       case "mostwanted":
         return (
@@ -125,22 +118,21 @@ export class ListsPage extends Component<any, any> {
       default:
         return null;
     }
-  }
+  };
 
-  render() {
-    return (
-      <>
-        <Select label="Selecione a listagem" onChange={(e) => this.handleSelectChange(e.target.value)}>
-          <SelectItem key="mostwanted">Produtos Mais Consumidos</SelectItem>
-          <SelectItem key="top5">Top 5 Clientes que Mais Gastaram</SelectItem>
-          <SelectItem key="top10">
-            Top 10 Clientes que Mais Consumiram
-          </SelectItem>
-          <SelectItem key="perRace">Mais Consumido por Raça</SelectItem>
-          <SelectItem key="perType">Mais Consumido por Tipo de Pet</SelectItem>
-        </Select>
-        {this.renderTable()}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Select
+        label="Selecione a listagem"
+        onChange={(e) => handleSelectChange(e.target.value)}
+      >
+        <SelectItem key="mostwanted">Produtos Mais Consumidos</SelectItem>
+        <SelectItem key="top5">Top 5 Clientes que Mais Gastaram</SelectItem>
+        <SelectItem key="top10">Top 10 Clientes que Mais Consumiram</SelectItem>
+        <SelectItem key="perRace">Mais Consumido por Raça</SelectItem>
+        <SelectItem key="perType">Mais Consumido por Tipo de Pet</SelectItem>
+      </Select>
+      {renderTable()}
+    </>
+  );
+};

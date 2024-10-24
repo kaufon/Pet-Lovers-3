@@ -1,5 +1,5 @@
 "use client";
-import React, { Component } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Table,
@@ -15,93 +15,72 @@ import { RegisterClientForm } from "./register-client-form";
 import { AlertModal } from "../../commons/alert-modal";
 import { ConsumeForm } from "./consume-form";
 
-export class DashBoardPage extends Component<any, any> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isModalOpen: false,
-      isAlertModalOpen: false,
-      isConsumeModalOpen: false,
-      isEditing: false, // New state to track if editing
-    };
-  }
+export const DashBoardPage = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isAlertModalOpen, setAlertModalOpen] = useState(false);
+  const [isConsumeModalOpen, setConsumeModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  openModal = (isEditing = false) => {
-    this.setState({ isModalOpen: true, isEditing });
+  const openModal = (isEditingMode: boolean = false) => {
+    setModalOpen(true);
+    setIsEditing(isEditingMode);
   };
 
-  openAlertModal = () => {
-    this.setState({ isAlertModalOpen: true });
+  const closeModal = () => {
+    setModalOpen(false);
+    setIsEditing(false);
   };
 
-  closeAlertModal = () => {
-    this.setState({ isAlertModalOpen: false });
-  };
+  const openAlertModal = () => setAlertModalOpen(true);
+  const closeAlertModal = () => setAlertModalOpen(false);
 
-  closeModal = () => {
-    this.setState({ isModalOpen: false, isEditing: false });
-  };
+  const openConsumeModal = () => setConsumeModalOpen(true);
+  const closeConsumeModal = () => setConsumeModalOpen(false);
 
-  openConsumeModal = () => {
-    this.setState({ isConsumeModalOpen: true });
-  };
+  return (
+    <>
+      <Button color="default" onClick={() => openModal(false)}>
+        Adicionar Cliente
+      </Button>
+      <Table selectionMode="single" shadow="md">
+        <TableHeader>
+          <TableColumn>ID</TableColumn>
+          <TableColumn>Nome</TableColumn>
+          <TableColumn>CPF</TableColumn>
+          <TableColumn>Pets</TableColumn>
+          <TableColumn>Ações</TableColumn>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>ID do Joaozinho</TableCell>
+            <TableCell>Nome do Joaozinho</TableCell>
+            <TableCell>Cpf do Joaozinho</TableCell>
+            <TableCell>Pets do Joaozinho</TableCell>
+            <TableCell>
+              <div className="flex flex-row gap-3 text-zinc-400">
+                <Tooltip content="Consumir">
+                  <DollarSign onClick={openConsumeModal} />
+                </Tooltip>
+                <Tooltip content="Editar">
+                  <Pen onClick={() => openModal(true)} />
+                </Tooltip>
+                <Tooltip content="Deletar">
+                  <Trash onClick={openAlertModal} />
+                </Tooltip>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      <RegisterClientForm
+        isOpen={isModalOpen}
+        isClosed={closeModal}
+        isRegister={!isEditing} // Register when not editing
+      />
+      <ConsumeForm isOpen={isConsumeModalOpen} isClosed={closeConsumeModal} />
+      <AlertModal isOpen={isAlertModalOpen} isClosed={closeAlertModal} />
+    </>
+  );
+};
 
-  closeConsumeModal = () => {
-    this.setState({ isConsumeModalOpen: false });
-  };
 
-  render() {
-    const { isEditing } = this.state; // Destructure isEditing for easier access
-
-    return (
-      <>
-        <Button color="default" onClick={() => this.openModal(false)}>
-          Adicionar Cliente
-        </Button>
-        <Table selectionMode="single" shadow="md">
-          <TableHeader>
-            <TableColumn>ID</TableColumn>
-            <TableColumn>Nome</TableColumn>
-            <TableColumn>CPF</TableColumn>
-            <TableColumn>Pets</TableColumn>
-            <TableColumn>Ações</TableColumn>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell>ID do Joaozinho</TableCell>
-              <TableCell>Nome do Joaozinho</TableCell>
-              <TableCell>Cpf do Joazinho</TableCell>
-              <TableCell>Pets do Joazinho</TableCell>
-              <TableCell>
-                <div className="flex flex-row gap-3 text-zinc-400">
-                  <Tooltip content="Consumir ">
-                    <DollarSign onClick={this.openConsumeModal} />
-                  </Tooltip>
-                  <Tooltip content="Editar  ">
-                    <Pen onClick={() => this.openModal(true)} />
-                  </Tooltip>
-                  <Tooltip content="Deletar">
-                    <Trash onClick={this.openAlertModal} />
-                  </Tooltip>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-        <RegisterClientForm
-          isOpen={this.state.isModalOpen}
-          isClosed={this.closeModal}
-          isRegister={!isEditing} 
-        />
-        <ConsumeForm
-          isOpen={this.state.isConsumeModalOpen}
-          isClosed={this.closeConsumeModal}
-        />
-        <AlertModal
-          isOpen={this.state.isAlertModalOpen}
-          isClosed={this.closeAlertModal}
-        />
-      </>
-    );
-  }
-}
